@@ -1,4 +1,4 @@
-# volume-meter
+# volume-meter native webcomponent
 webcomponent for microphone  volume display
 # Use
 
