@@ -1,5 +1,5 @@
 {
-  "name": "volume-meter",
+  "name": "volume-meter-wc",
   "version": "0.0.1",
   "private": false,
   "description": "Simple microphone volume meter",
@@ -12,7 +12,9 @@
   },
   "keywords": [
     "Web Component",
-    "webpack"
+    "webpack",
+    "microphone",
+    "meter"
   ],
   "author": "Iñigo Tamayo <itamayo@vicomtech.org>",
   "license": "(LGPL)",
