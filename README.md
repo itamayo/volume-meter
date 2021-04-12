@@ -1,5 +1,6 @@
 # volume-meter native webcomponent
-webcomponent for microphone  volume display
+webcomponent for microphone  volume display. Based on old implementation https://github.com/cwilso/volume-meter
+
 # Use
 
 ```html
