@@ -1,6 +1,6 @@
 {
   "name": "volume-meter-wc",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "private": false,
   "description": "Simple microphone volume meter",
   "scripts": {

@@ -5,7 +5,7 @@ webcomponent for microphone  volume display. Based on old implementation https:/
 
 ```html
 
-<volume-meter width="200" height="50 color="orange"></volume-meter>
+<volume-meter width="200" height="50" color="orange"></volume-meter>
 ```
 
 > Importante notice: Its dependes on user interaction to get access to microphone                                                   
