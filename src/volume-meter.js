@@ -10,7 +10,6 @@ export class VolumeMeter extends HTMLElement {
         this.meter = null;
         this.canvasContext = null;
         this.rafID = null;
-        this.color = "green";
     }
     get color (){
         return this.getAttribute('color');
@@ -41,6 +40,7 @@ export class VolumeMeter extends HTMLElement {
         this.setAttribute("height", parseInt(x));
     }
     async connectedCallback() {
+         this.color = "green";
         setTimeout(()=>{this.init();},4000);
     }
     init() {
