@@ -1,4 +1,3 @@
-import "regenerator-runtime/runtime";
 export class VolumeMeter extends HTMLElement {
 
 
@@ -7,7 +6,7 @@ export class VolumeMeter extends HTMLElement {
         this.attachShadow({ mode: 'open' });
         //this.shadowRoot.innerHTML+="<style>"+buttonClass+"</style>";
         this.audioContext = null;
-        this.meter = null;
+        this.meter = undefined;
         this.canvasContext = null;
         this.rafID = null;
     }
@@ -41,9 +40,8 @@ export class VolumeMeter extends HTMLElement {
     }
     async connectedCallback() {
          this.color = "green";
-        setTimeout(()=>{this.init();},4000);
     }
-    init() {
+    init(stream) {
         // grab our canvas
         if (!this.shadowRoot.querySelector("canvas")) {
             let canvas = document.createElement('canvas');
@@ -58,36 +56,19 @@ export class VolumeMeter extends HTMLElement {
         // grab an audio context
         this.audioContext = new AudioContext();
         // monkeypatch getUserMedia
-        navigator.getUserMedia =
-            navigator.getUserMedia ||
-            navigator.webkitGetUserMedia ||
-            navigator.mozGetUserMedia;
-
-        // ask for an audio input
-        navigator.mediaDevices.getUserMedia(
-            {
-                "audio": {
-                    "mandatory": {
-                        "googEchoCancellation": "false",
-                        "googAutoGainControl": "false",
-                        "googNoiseSuppression": "false",
-                        "googHighpassFilter": "false"
-                    },
-                    "optional": []
-                }
-            }).then((stream) => {
-                let mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
-                // Create a new volume meter and connect it.
-                this.meter = this.createAudioMeter(this.audioContext);
-                mediaStreamSource.connect(this.meter);
-
-                // kick off the visual updating
-                this.render();
-            }).catch(e => console.log('Stream generation failed.',e));
-
+        let mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+        // Create a new volume meter and connect it.
+        this.meter = this.createAudioMeter(this.audioContext);
+        mediaStreamSource.connect(this.meter);
+        this.render();
+       
     }
-
+    hide (){
+        this.canvasContext.clearRect(0, 0, this.width, this.height);
+        this.meter = undefined;
+    }
     render(time) {
+        if (!this.meter) return;
         // clear the background
         this.canvasContext.clearRect(0, 0, this.width, this.height);
 
@@ -98,7 +79,7 @@ export class VolumeMeter extends HTMLElement {
             this.canvasContext.fillStyle = this.color;
 
         // draw a bar based on the current volume
-        this.canvasContext.fillRect(0, 0, this.meter.volume * this.width * 1.4, this.height);
+        this.canvasContext.fillRect(0, 0, this.height,this.meter.volume * this.width * 1.4);
 
         // set up the next visual callback
         this.rafID = window.requestAnimationFrame(this.render.bind(this));
@@ -161,3 +142,29 @@ export class VolumeMeter extends HTMLElement {
     }
 }
 customElements.define('volume-meter', VolumeMeter);
+
+setTimeout(()=>{
+    navigator.getUserMedia =
+navigator.getUserMedia ||
+navigator.webkitGetUserMedia ||
+navigator.mozGetUserMedia;
+
+// ask for an audio input
+navigator.mediaDevices.getUserMedia(
+{
+    "audio": {
+        "mandatory": {
+            "googEchoCancellation": "false",
+            "googAutoGainControl": "false",
+            "googNoiseSuppression": "false",
+            "googHighpassFilter": "false"
+        },
+        "optional": []
+    }
+}).then((stream) => {
+    let vmc = document.querySelector('volume-meter');
+    vmc.init(stream);
+    // kick off the visual updating
+    this.render();
+}).catch(e => console.log('Stream generation failed.',e));
+},4000);
